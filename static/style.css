@@ -385,6 +385,12 @@ body {
     border: 1px solid transparent;
 }
 
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .btn-primary {
     background: rgba(56, 189, 248, 0.08);
     border: 1px solid rgba(56, 189, 248, 0.25);
@@ -400,6 +406,23 @@ body {
 }
 
 .btn-primary:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--surface-border);
+    color: var(--text-primary);
+    padding: 10px 18px;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-secondary:active:not(:disabled) {
     transform: translateY(1px);
 }
 
@@ -633,6 +656,23 @@ body {
     background: var(--color-primary);
     color: #040810;
     border-color: var(--color-primary);
+}
+
+.btn-card-copy {
+    border-color: rgba(16, 185, 129, 0.2);
+    color: var(--color-announcement);
+}
+
+.btn-card-copy:hover {
+    border-color: var(--color-announcement);
+    background: rgba(16, 185, 129, 0.06);
+    color: var(--text-primary);
+}
+
+.btn-card-copy.copied {
+    background: var(--color-announcement);
+    color: #040810;
+    border-color: var(--color-announcement);
 }
 
 .btn-card svg {
