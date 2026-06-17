@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Hub & Tweet Composer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="https://www.gstatic.com/images/branding/product/1x/bigquery_64dp.png">
+</head>
+<body>
+    <div class="app-background">
+        <div class="glow-sphere glow-sphere-1"></div>
+        <div class="glow-sphere glow-sphere-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar/Left main section -->
+        <main class="feed-section">
+            <header class="app-header">
+                <div class="header-logo">
+                    <svg viewBox="0 0 24 24" class="logo-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1>BigQuery <span>Release Notes</span></h1>
+                        <p>Stay updated with Google Cloud BigQuery releases and share them instantly</p>
+                    </div>
+                </div>
+                
+                <div class="sync-status" id="syncStatus">
+                    <span class="status-dot status-green"></span>
+                    <span class="status-text">Synced from cache</span>
+                </div>
+            </header>
+
+            <!-- Filters & Controls Bar -->
+            <section class="controls-card">
+                <div class="search-box">
+                    <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search updates (e.g. Gemini, partition, JSON)..." aria-label="Search release notes">
+                    <button class="clear-search" id="clearSearch" aria-label="Clear search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="filters-and-actions">
+                    <div class="filter-chips" id="filterChips">
+                        <button class="chip active" data-filter="all">All</button>
+                        <button class="chip" data-filter="Feature">
+                            <span class="chip-color chip-feature"></span>Features
+                        </button>
+                        <button class="chip" data-filter="Announcement">
+                            <span class="chip-color chip-announcement"></span>Announcements
+                        </button>
+                        <button class="chip" data-filter="Issue">
+                            <span class="chip-color chip-issue"></span>Issues
+                        </button>
+                        <button class="chip" data-filter="Deprecation">
+                            <span class="chip-color chip-deprecation"></span>Deprecations
+                        </button>
+                    </div>
+
+                    <button class="btn btn-primary" id="refreshBtn" title="Refresh Release Notes">
+                        <svg class="btn-icon" id="refreshIcon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18v3.38"></path>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Release Notes Feed -->
+            <section class="feed-container" id="feedContainer">
+                <!-- Skeletons will show here during loading -->
+                <div class="skeleton-group">
+                    <div class="skeleton-date-header"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Right side sidebar: Tweet Composer -->
+        <aside class="composer-section" id="composerSection">
+            <div class="composer-card">
+                <div class="composer-header">
+                    <svg viewBox="0 0 24 24" class="x-logo-icon" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <div>
+                        <h2>Tweet Composer</h2>
+                        <p>Prepare and publish release updates directly</p>
+                    </div>
+                </div>
+
+                <div class="composer-body">
+                    <!-- Instruction when empty -->
+                    <div class="composer-empty-state" id="composerEmptyState">
+                        <div class="empty-icon-wrapper">
+                            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"></path>
+                            </svg>
+                        </div>
+                        <h3>No Update Selected</h3>
+                        <p>Select any individual release note from the feed on the left by clicking the <strong>Select to Tweet</strong> button to get started.</p>
+                    </div>
+
+                    <!-- Composer Form (hidden by default) -->
+                    <div class="composer-form" id="composerForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="tweetText">Tweet Content</label>
+                            <textarea id="tweetText" rows="6" maxlength="500" placeholder="What's happening?"></textarea>
+                        </div>
+
+                        <!-- Hashtags helper -->
+                        <div class="hashtag-helper">
+                            <span class="label">Quick Tags:</span>
+                            <div class="tag-pool" id="tagPool">
+                                <button class="tag-chip active" data-tag="#BigQuery">#BigQuery</button>
+                                <button class="tag-chip active" data-tag="#GoogleCloud">#GoogleCloud</button>
+                                <button class="tag-chip" data-tag="#DataEngineering">#DataEng</button>
+                                <button class="tag-chip" data-tag="#Data">#Data</button>
+                                <button class="tag-chip" data-tag="#Gemini">#Gemini</button>
+                            </div>
+                        </div>
+
+                        <!-- Options toggles -->
+                        <div class="composer-options">
+                            <label class="toggle-control">
+                                <input type="checkbox" id="includeLinkToggle" checked>
+                                <span class="control-indicator"></span>
+                                <span class="control-label">Include release notes URL</span>
+                            </label>
+                        </div>
+
+                        <!-- Character count and preview -->
+                        <div class="composer-footer">
+                            <div class="char-count-wrapper">
+                                <svg class="char-ring" width="36" height="36">
+                                    <circle class="ring-bg" cx="18" cy="18" r="14" fill="transparent" stroke-width="3"/>
+                                    <circle class="ring-fill" id="charProgressRing" cx="18" cy="18" r="14" fill="transparent" stroke-width="3" stroke-dasharray="88" stroke-dashoffset="88"/>
+                                </svg>
+                                <span id="charCountLabel" class="char-count">0/280</span>
+                            </div>
+
+                            <button class="btn btn-accent btn-large" id="tweetShareBtn">
+                                <svg viewBox="0 0 24 24" class="btn-icon" fill="currentColor">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                                <span>Tweet this update</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Script Resource -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
